@@ -1,0 +1,27 @@
+name: Brainrot Studio QA Stress
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Run 5M pipeline combination stress test
+        run: npm run qa:stress
+        env:
+          QA_CASES: 5000000
