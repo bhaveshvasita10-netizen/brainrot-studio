@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "0.12.15",
+    "@ffmpeg/util": "0.12.2",
     "@supabase/supabase-js": "^2.57.4",
     "next": "15.5.24",
     "react": "19.1.1",
