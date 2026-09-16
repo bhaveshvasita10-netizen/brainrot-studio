@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "qa:stress": "node qa/stress-test.mjs"
   },
   "dependencies": {
     "@ffmpeg/ffmpeg": "0.12.15",
