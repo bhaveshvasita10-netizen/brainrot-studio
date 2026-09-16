@@ -1,35 +1,32 @@
 # Brainrot Studio AI
 
-Production-oriented Next.js starter for an original surreal kids-cartoon generation platform.
+A production-oriented Next.js + Supabase studio for creating original, kid-friendly surreal cartoon shorts.
 
-## Current foundation
-- Next.js + TypeScript
-- Supabase Auth + PostgreSQL + RLS
-- Programmatic 100,000-character combinatorial library
-- Authenticated character library
-- Favorite characters
-- Private storage buckets scaffolded in Supabase
-- Random character API
+## Included
+- Supabase magic-link authentication and private per-user libraries
+- Original character randomizer
+- AI story + scene generation
+- AI character image generation
+- AI narration generation
+- Browser-side short-video renderer with vertical 720x1280 output
+- Private Supabase Storage for character art, videos, and thumbnails
+- YouTube OAuth connection
+- Resumable-style YouTube upload endpoint
+- Scheduled YouTube upload queue checked by Vercel Cron
+- Server-side OAuth token encryption
 
-## Local setup
-```bash
-npm install
-npm run dev
-```
+## Environment
+See `.env.local.example`. Never expose server secrets as `NEXT_PUBLIC_*` values and never commit `.env.local`.
 
-Then open `http://localhost:3000`.
+## Production requirements
+1. Add Supabase public + service-role credentials to Vercel.
+2. Add an AI provider key (the current routes use an OpenAI-compatible API).
+3. Create a Google OAuth client with the YouTube Data API enabled and set `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, and `YOUTUBE_REDIRECT_URI`.
+4. Add a 32-byte `YOUTUBE_TOKEN_ENCRYPTION_KEY` and `CRON_SECRET` in Vercel.
+5. Add the deployed site URL to the Supabase Auth redirect allow-list and the Google OAuth redirect allow-list.
 
-## Supabase
-The app uses `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
-Keep service-role/secret keys server-side only.
+## Video architecture
+Short drafts are rendered in the browser so users can test the full workflow without a long-running server request. For longer or heavier production renders, move rendering into a durable FFmpeg/video worker and keep only job orchestration in Vercel.
 
-For magic-link auth, add your deployed URL to Supabase Auth redirect URLs.
-
-## Production integrations still requiring credentials
-- AI image generation provider
-- AI video generation provider
-- TTS/voice provider
-- YouTube OAuth client credentials
-- Production domain
-
-These integrations are kept separate from the core database model so vendors can be changed later.
+## Original-IP guardrails
+Prompts explicitly request original characters and avoid existing copyrighted characters, logos, celebrity likenesses, songs, or catchphrases.
