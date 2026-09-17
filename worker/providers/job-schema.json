@@ -1,0 +1,27 @@
+{
+  "job": {
+    "id": "uuid",
+    "prompt": "string",
+    "negative_prompt": "string",
+    "image_url": "optional string",
+    "width": 704,
+    "height": 1280,
+    "frames": 49,
+    "fps": 16,
+    "provider": "auto|local|huggingface|colab|kaggle",
+    "priority": 0,
+    "max_attempts": 3
+  },
+  "result": {
+    "status": "queued|running|completed|failed|cancelled",
+    "provider": "string",
+    "attempt": 1,
+    "video_url": "optional string",
+    "duration_seconds": 0,
+    "width": 0,
+    "height": 0,
+    "has_audio": false,
+    "sha256": "optional string",
+    "error": "optional string"
+  }
+}
