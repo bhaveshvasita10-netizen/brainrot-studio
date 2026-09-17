@@ -1,0 +1,41 @@
+name: Fix FFmpeg Blob typing
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fix BlobPart typing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('components/BrainrotStudio.tsx')
+          s = p.read_text()
+          old = "return new Blob([out as Uint8Array],{type:'video/mp4'})"
+          new = "const bytes=out as Uint8Array; const copy=new Uint8Array(bytes.byteLength); copy.set(bytes); return new Blob([copy.buffer as ArrayBuffer],{type:'video/mp4'})"
+          if old not in s:
+              print('No matching FFmpeg Blob line found; nothing to change.')
+          else:
+              p.write_text(s.replace(old,new,1))
+          PY
+
+      - name: Commit fix if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git diff --quiet; then
+            echo 'No changes.'
+          else
+            git add components/BrainrotStudio.tsx
+            git commit -m 'fix: resolve FFmpeg BlobPart typing'
+            git push
+          fi
