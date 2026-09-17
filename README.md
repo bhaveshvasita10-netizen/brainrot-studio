@@ -30,3 +30,6 @@ Short drafts are rendered in the browser so users can test the full workflow wit
 
 ## Original-IP guardrails
 Prompts explicitly request original characters and avoid existing copyrighted characters, logos, celebrity likenesses, songs, or catchphrases.
+
+## QA
+The GitHub Actions stress workflow exercises 5,000,000 deterministic media-pipeline combinations. It validates pipeline configuration only; real AI rendering requires configured external provider credentials and incurs provider compute/API usage.
