@@ -1,0 +1,31 @@
+{
+  "providers": [
+    {
+      "id": "local-rtx-5060",
+      "kind": "comfyui",
+      "enabled": true,
+      "role": "primary-local"
+    },
+    {
+      "id": "huggingface-zerogpu",
+      "kind": "gradio-space",
+      "enabled": true,
+      "role": "free-online-fallback",
+      "limits": "quota-based"
+    },
+    {
+      "id": "google-colab",
+      "kind": "notebook-worker",
+      "enabled": true,
+      "role": "free-online-batch",
+      "limits": "dynamic"
+    },
+    {
+      "id": "kaggle",
+      "kind": "notebook-worker",
+      "enabled": true,
+      "role": "free-online-batch",
+      "limits": "weekly-quota"
+    }
+  ]
+}
