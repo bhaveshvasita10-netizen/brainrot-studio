@@ -18,7 +18,7 @@ _pipe = None
 def get_pipeline():
     global _pipe
     if _pipe is None:
-        _pipe = LTXPipeline.from_pretrained(MODEL_ID, torch_dtype=DTYPE)
+        _pipe = LTXPipeline.from_pretrained(MODEL_ID, dtype=DTYPE)
         _pipe.to(DEVICE)
         if DEVICE == "cuda":
             try:
