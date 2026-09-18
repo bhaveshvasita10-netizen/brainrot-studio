@@ -60,3 +60,6 @@ Prompts explicitly request original characters and avoid existing copyrighted ch
 
 ## QA
 The GitHub Actions stress workflow exercises deterministic media-pipeline combinations. It validates configuration/invariants only. A real 3,000-video AI-render benchmark must execute on an actual GPU worker and will take substantial time, storage, heat, and power; it cannot be truthfully replaced by a deterministic loop.
+
+## Soul companion experience
+The main app is branded as **Soul** and includes discovery, companion creation, persistent conversations, memory-aware chat, and an adult-only setting limited to non-graphic romance/affection. The production UI is deployed from the `main` branch through Vercel.
