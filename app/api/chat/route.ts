@@ -36,7 +36,9 @@ export async function POST(req: NextRequest) {
         const { data } = await sb.from('conversations').insert({ user_id: user.id, character_id: characterId, title: character.name }).select('id').single();
         conversationId = data?.id || null;
       }
-      if (conversationId) {
+      if (characterId && /^[0-9a-f-]{36}$/i.test(characterId) && /^\s*(remember|please remember|don't forget|do not forget)\b/i.test(String(latestUserText))) { const memory = String(latestUserText).replace(/^\s*(remember|please remember|don't forget|do not forget)\s*[:,-]?\s*/i,'').trim(); if(memory.length >= 3) await sb.from('memories').upsert({user_id:user.id,character_id:characterId,memory,importance:3},{onConflict:'user_id,character_id,memory'}); }
+
+    if (conversationId) {
         await sb.from('messages').insert({ conversation_id: conversationId, user_id: user.id, role: 'user', content: String(latestUserText) });
       }
     }
