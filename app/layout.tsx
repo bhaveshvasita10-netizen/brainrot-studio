@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Soul — AI Companions',
-  description: 'Discover, create and chat with AI companions.',
+  description: 'Discover, create and chat with original AI companions.',
 };
 
 export default function RootLayout({children}:{readonly children:React.ReactNode}){
