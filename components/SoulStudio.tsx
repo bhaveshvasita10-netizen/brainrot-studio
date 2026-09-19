@@ -185,11 +185,9 @@ export default function SoulStudio(){
       const data=await res.json();
       if(!res.ok)throw new Error(data.error||'Chat is unavailable.');
       setMessages(m=>({...m,[active.id]:[...history,{role:'assistant',content:data.reply,time:now()}]}));
-    }catch{
-      await new Promise(r=>setTimeout(r,450));
-      const answer=replyFallback(active,value);
-      setMessages(m=>({...m,[active.id]:[...history,{role:'assistant',content:answer,time:now()}]}));
-      setNotice('Demo reply used. Add OPENAI_API_KEY in Vercel for live AI conversations.');
+    }catch(error){
+      const message=error instanceof Error ? error.message : 'Live AI request failed.';
+      setNotice(message);
     }finally{setTyping(false);}
   }
 
