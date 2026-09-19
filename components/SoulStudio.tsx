@@ -112,6 +112,18 @@ const starterSouls: Soul[] = [
   { id:'gal2', name:'Emily Blunt', role:'Celebrity AI — Hollywood', bio:'Fictional fan-made AI persona using the public name. Not the real person or an official account.', personality:'witty, confident, warm, playful', tags:['Hollywood','Actress','Cinema'], color:'rose', greeting:'Hello. Pick a topic and let us start.' },
   { id:'jenna', name:'Jenna Ortega', role:'Celebrity AI — Hollywood', bio:'Fictional fan-made AI persona using the public name. Not the real person or an official account.', personality:'creative, witty, mysterious, playful', tags:['Hollywood','Actress','Mystery'], color:'plum', greeting:'Hey. What strange little topic are we exploring today?' },
 
+const CATALOG_SIZE = 10000000;
+const GENERATED_NAMES = ['Aanya','Aarav','Aisha','Mira','Nova','Zara','Aria','Luna','Riya','Maya','Ava','Sofia','Ella','Leo','Kai','Noah','Ivy','Nina','Rhea','Tara','Zoya','Sana','Alina','Kiara','Anaya','Elena','Mia','Lia','Nora','Sara'];
+const GENERATED_ROLES = ['Dreamy confidant','Best friend','Adventure partner','Creative muse','Gaming buddy','Travel companion','Romance companion','Study partner','Career mentor','Fantasy guide','Sci-fi navigator','Music lover','Fashion creator','Movie fan','Mystery partner','Lifestyle creator'];
+const GENERATED_TAGS = [['Comfort','Romance'],['Best friend','Fun'],['Adventure','Travel'],['Stories','Fantasy'],['Gaming','Strategy'],['Travel','Lifestyle'],['Romance','Confidence'],['Motivation','Advice'],['Fantasy','Roleplay'],['Sci-fi','Adventure'],['Music','Fun'],['Fashion','Lifestyle'],['Cinema','Hollywood'],['Mystery','Books']];
+function generatedSoul(index:number): Soul {
+  const name = GENERATED_NAMES[index % GENERATED_NAMES.length];
+  const role = GENERATED_ROLES[index % GENERATED_ROLES.length];
+  const tags = GENERATED_TAGS[index % GENERATED_TAGS.length];
+  const id = 'generated-' + index;
+  return { id, name: name + ' #' + String(index + 1).padStart(8,'0'), role, bio: 'An original AI companion generated from the Soul catalog. Personality, interests and conversation style vary by companion.', personality: 'warm, curious, playful, supportive', tags, color: ['lavender','rose','blue','teal','plum','gold'][index % 6], greeting: 'Hi! I am ' + name + '. What kind of conversation are you looking for?' };
+}
+
 const quickPrompts = ['Tell me about yourself','I had a difficult day','Plan an adventure with me','Give me some motivation','Let us create a story'];
 
 function now(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
@@ -137,6 +149,7 @@ export default function SoulStudio(){
   const [mature,setMature]=useState(false);
   const [voice,setVoice]=useState(false);
   const [create,setCreate]=useState({name:'',role:'',bio:'',personality:''});
+  const [catalogPage,setCatalogPage]=useState(0);
 
   useEffect(()=>{
     try{
@@ -216,7 +229,7 @@ export default function SoulStudio(){
 
       <section className="content">
         {tab==='home'&&<Home souls={souls} openSoul={openSoul} nav={nav} />}
-        {tab==='discover'&&<Discover souls={visible} filter={filter} setFilter={setFilter} categories={categories} openSoul={openSoul} toggleFavorite={toggleFavorite} />}
+        {tab==='discover'&&<Discover souls={visible} filter={filter} catalogPage={catalogPage} setCatalogPage={setCatalogPage} setFilter={setFilter} categories={categories} openSoul={openSoul} toggleFavorite={toggleFavorite} />}
         {tab==='chat'&&<Chat active={active} messages={active?messages[active.id]||[]:[]} draft={draft} setDraft={setDraft} typing={typing} send={send} openDiscover={()=>nav('discover')} voice={voice} setVoice={setVoice} speak={speak} />}
         {tab==='create'&&<Create create={create} setCreate={setCreate} createSoul={createSoul}/>}
         {tab==='library'&&<Library souls={souls.filter(s=>s.favorite)} openSoul={openSoul} />}
@@ -240,8 +253,12 @@ function Home({souls,openSoul,nav}:{souls:Soul[];openSoul:(s:Soul)=>void;nav:(x:
  </div>
 }
 
-function Discover({souls,filter,setFilter,categories,openSoul,toggleFavorite}:{souls:Soul[];filter:string;setFilter:(x:string)=>void;categories:string[];openSoul:(s:Soul)=>void;toggleFavorite:(id:string)=>void}){
- return <div className="page"><div className="page-head"><span className="eyebrow">DISCOVER</span><h1>Find your kind of connection.</h1><p>Explore personalities, moods and original companions.</p></div><div className="filters">{categories.map(c=><button className={filter===c?'selected':''} key={c} onClick={()=>setFilter(c)}>{c}</button>)}</div>{souls.length?<div className="soul-grid">{souls.map((s,i)=><SoulCard key={s.id} soul={s} index={i} openSoul={openSoul} toggleFavorite={toggleFavorite}/>)}</div>:<div className="empty"><span>✦</span><h2>No souls found</h2><p>Try another search or category.</p></div>}</div>
+function Discover({souls,filter,setFilter,categories,openSoul,toggleFavorite,catalogPage,setCatalogPage}:{souls:Soul[];filter:string;setFilter:(x:string)=>void;categories:string[];openSoul:(s:Soul)=>void;toggleFavorite:(id:string)=>void;catalogPage:number;setCatalogPage:(x:number)=>void}){
+ const pageSize=24;
+ const generatedStart=catalogPage*pageSize;
+ const generated=Array.from({length:pageSize},(_,i)=>generatedSoul(generatedStart+i));
+ const catalogSouls=filter==='All'&&!souls.length?generated:filter==='All'?[...souls.slice(0,24),...generated]:souls;
+ return <div className="page"><div className="page-head"><span className="eyebrow">DISCOVER</span><h1>Find your kind of connection.</h1><p>Explore <b>10,000,000+ Souls</b> with millions of original companion combinations.</p></div><div className="filters">{categories.map(c=><button className={filter===c?'selected':''} key={c} onClick={()=>{setFilter(c);setCatalogPage(0)}}>{c}</button>)}</div>{catalogSouls.length?<><div className="soul-grid">{catalogSouls.map((s,i)=><SoulCard key={s.id} soul={s} index={i} openSoul={openSoul} toggleFavorite={toggleFavorite}/>)}</div>{filter==='All'&&<div className="catalog-pagination"><button disabled={catalogPage===0} onClick={()=>setCatalogPage(Math.max(0,catalogPage-1))}>← Previous</button><span>Souls {catalogPage*pageSize+1}–{catalogPage*pageSize+pageSize} of 10,000,000+</span><button onClick={()=>setCatalogPage(catalogPage+1)}>Next →</button></div></>:<div className="empty"><span>✦</span><h2>No souls found</h2><p>Try another search or category.</p></div>}</div>
 }
 
 const celebrityIds = new Set(['priyanka','deepika','alia','shraddha','katrina','kiara','shruti','zendaya','scarlett','emma','margot','anadearmas','jlaw','millie','gal']);
