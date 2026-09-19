@@ -194,8 +194,20 @@ function Discover({souls,filter,setFilter,categories,openSoul,toggleFavorite}:{s
  return <div className="page"><div className="page-head"><span className="eyebrow">DISCOVER</span><h1>Find your kind of connection.</h1><p>Explore personalities, moods and original companions.</p></div><div className="filters">{categories.map(c=><button className={filter===c?'selected':''} key={c} onClick={()=>setFilter(c)}>{c}</button>)}</div>{souls.length?<div className="soul-grid">{souls.map((s,i)=><SoulCard key={s.id} soul={s} index={i} openSoul={openSoul} toggleFavorite={toggleFavorite}/>)}</div>:<div className="empty"><span>✦</span><h2>No souls found</h2><p>Try another search or category.</p></div>}</div>
 }
 
+const celebrityIds = new Set(['priyanka','deepika','alia','shraddha','katrina','kiara','shruti','zendaya','scarlett','emma','margot','anadearmas','jlaw','millie','gal']);
+
 function SoulCard({soul,index,openSoul,toggleFavorite}:{soul:Soul;index:number;openSoul:(s:Soul)=>void;toggleFavorite?:(id:string)=>void}){
- return <article className="soul-card"><div className={`soul-art ${soul.color}`}><div className="portrait">{['☾','✦','◇','♢','☀','✧'][index%6]}</div><span className="online">●</span></div><div className="card-body"><div className="card-name"><div><h3>{soul.name}</h3><small>{soul.role}</small></div>{toggleFavorite&&<button className={soul.favorite?'heart on':'heart'} onClick={()=>toggleFavorite(soul.id)}>{soul.favorite?'♥':'♡'}</button>}</div><p>{soul.bio}</p><div className="tags">{soul.tags.slice(0,3).map(t=><span key={t}>{t}</span>)}</div><button className="chat-btn" onClick={()=>openSoul(soul)}>Start chatting <b>→</b></button></div></article>
+  const [photo,setPhoto]=useState('');
+  useEffect(()=>{
+    if(!celebrityIds.has(soul.id)) return;
+    let cancelled=false;
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(soul.name)}`)
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{if(!cancelled && d?.thumbnail?.source)setPhoto(d.thumbnail.source);})
+      .catch(()=>{});
+    return ()=>{cancelled=true};
+  },[soul.id,soul.name]);
+ return <article className="soul-card"><div className={`soul-art ${soul.color}`} style={photo?{backgroundImage:`url("${photo}")`,backgroundSize:'cover',backgroundPosition:'center'}:undefined}><div className={photo?'portrait portrait-photo':'portrait'}>{photo?'':['☾','✦','◇','♢','☀','✧'][index%6]}</div><span className="online">●</span>{celebrityIds.has(soul.id)&&<span className="celebrity-badge">Celebrity AI</span>}</div><div className="card-body"><div className="card-name"><div><h3>{soul.name}</h3><small>{soul.role}</small></div>{toggleFavorite&&<button className={soul.favorite?'heart on':'heart'} onClick={()=>toggleFavorite(soul.id)}>{soul.favorite?'♥':'♡'}</button>}</div><p>{soul.bio}</p><div className="tags">{soul.tags.slice(0,3).map(t=><span key={t}>{t}</span>)}</div><button className="chat-btn" onClick={()=>openSoul(soul)}>Start chatting <b>→</b></button></div></article>
 }
 
 function Chat({active,messages,draft,setDraft,typing,send,openDiscover,voice,setVoice,speak}:{active:Soul|null;messages:Message[];draft:string;setDraft:(x:string)=>void;typing:boolean;send:(x?:string)=>void;openDiscover:()=>void;voice:boolean;setVoice:(x:boolean)=>void;speak:(x:string)=>void}){
