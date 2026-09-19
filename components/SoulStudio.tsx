@@ -257,8 +257,33 @@ function Discover({souls,filter,setFilter,categories,openSoul,toggleFavorite,cat
  const pageSize=24;
  const generatedStart=catalogPage*pageSize;
  const generated=Array.from({length:pageSize},(_,i)=>generatedSoul(generatedStart+i));
- const catalogSouls=filter==='All'&&!souls.length?generated:filter==='All'?[...souls.slice(0,24),...generated]:souls;
- return <div className="page"><div className="page-head"><span className="eyebrow">DISCOVER</span><h1>Find your kind of connection.</h1><p>Explore <b>10,000,000+ Souls</b> with millions of original companion combinations.</p></div><div className="filters">{categories.map(c=><button className={filter===c?'selected':''} key={c} onClick={()=>{setFilter(c);setCatalogPage(0)}}>{c}</button>)}</div>{catalogSouls.length?<><div className="soul-grid">{catalogSouls.map((s,i)=><SoulCard key={s.id} soul={s} index={i} openSoul={openSoul} toggleFavorite={toggleFavorite}/>)}</div>{filter==='All'&&<div className="catalog-pagination"><button disabled={catalogPage===0} onClick={()=>setCatalogPage(Math.max(0,catalogPage-1))}>← Previous</button><span>Souls {catalogPage*pageSize+1}–{catalogPage*pageSize+pageSize} of 10,000,000+</span><button onClick={()=>setCatalogPage(catalogPage+1)}>Next →</button></div></>:<div className="empty"><span>✦</span><h2>No souls found</h2><p>Try another search or category.</p></div>}</div>
+ const catalogSouls=filter==='All'?[...souls.slice(0,24),...generated]:souls;
+ return (
+  <div className="page">
+   <div className="page-head">
+    <span className="eyebrow">DISCOVER</span>
+    <h1>Find your kind of connection.</h1>
+    <p>Explore <b>10,000,000+ Souls</b> with millions of original companion combinations.</p>
+   </div>
+   <div className="filters">
+    {categories.map(c=><button className={filter===c?'selected':''} key={c} onClick={()=>{setFilter(c);setCatalogPage(0)}}>{c}</button>)}
+   </div>
+   {catalogSouls.length > 0 ? (
+    <div className="soul-grid">
+     {catalogSouls.map((s,i)=><SoulCard key={s.id} soul={s} index={i} openSoul={openSoul} toggleFavorite={toggleFavorite}/>)}
+    </div>
+   ) : (
+    <div className="empty"><span>✦</span><h2>No souls found</h2><p>Try another search or category.</p></div>
+   )}
+   {filter==='All' && (
+    <div className="catalog-pagination">
+     <button disabled={catalogPage===0} onClick={()=>setCatalogPage(Math.max(0,catalogPage-1))}>← Previous</button>
+     <span>Souls {catalogPage*pageSize+1}–{catalogPage*pageSize+pageSize} of 10,000,000+</span>
+     <button onClick={()=>setCatalogPage(catalogPage+1)}>Next →</button>
+    </div>
+   )}
+  </div>
+ );
 }
 
 const celebrityIds = new Set(['priyanka','deepika','alia','shraddha','katrina','kiara','shruti','zendaya','scarlett','emma','margot','anadearmas','jlaw','millie','gal']);
