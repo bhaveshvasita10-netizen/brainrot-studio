@@ -116,7 +116,7 @@ export default function SoulStudio(){
     setMessages(m=>({...m,[active.id]:history}));setDraft('');setTyping(true);
     try{
       const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        character:{name:active.name,personality:active.personality,bio:active.bio,relationship_style:mature?'adult romance / affection':'friendship'},
+        character:{name:active.name,personality:active.personality,bio:active.bio,relationship_style:mature?'adult romance, flirting and affectionate roleplay':'friendship'},
         messages:history.map(x=>({role:x.role,content:x.content})), matureEnabled:mature
       })});
       const data=await res.json();
@@ -224,5 +224,5 @@ function Library({souls,openSoul}:{souls:Soul[];openSoul:(s:Soul)=>void}){
 }
 
 function Profile({mature,setMature,voice,setVoice}:{mature:boolean;setMature:(x:boolean)=>void;voice:boolean;setVoice:(x:boolean)=>void}){
- return <div className="page profile-page"><div className="profile-hero"><div className="big-avatar">B</div><div><span className="eyebrow">YOUR PROFILE</span><h1>Welcome to Soul.</h1><p>Your preferences are stored locally in this demo.</p></div></div><div className="settings-card"><h2>Preferences</h2><div className="setting"><div><b>18+ mature conversation</b><small>Allows romantic, affectionate and mature non-graphic conversation between adults. It does not enable explicit sexual content.</small></div><button className={mature?'toggle on':'toggle'} onClick={()=>setMature(!mature)}><span/></button></div><div className="setting"><div><b>Voice mode</b><small>Use your browser's speech features for read-aloud replies.</small></div><button className={voice?'toggle on':'toggle'} onClick={()=>setVoice(!voice)}><span/></button></div></div><div className="privacy-card"><b>Privacy first</b><p>This starter stores conversations and created souls in your browser's local storage. Add a database/auth layer before collecting real user data.</p></div></div>
+ return <div className="page profile-page"><div className="profile-hero"><div className="big-avatar">B</div><div><span className="eyebrow">YOUR PROFILE</span><h1>Welcome to Soul.</h1><p>Your preferences are stored locally in this demo.</p></div></div><div className="settings-card"><h2>Preferences</h2><div className="setting"><div><b>18+ Adult Romance</b><small>Allows adult romance, flirting, affection, dating roleplay and suggestive but non-graphic conversations between adults.</small></div><button className={mature?'toggle on':'toggle'} onClick={()=>setMature(!mature)}><span/></button></div><div className="setting"><div><b>Voice mode</b><small>Use your browser's speech features for read-aloud replies.</small></div><button className={voice?'toggle on':'toggle'} onClick={()=>setVoice(!voice)}><span/></button></div></div><div className="privacy-card"><b>Privacy first</b><p>This starter stores conversations and created souls in your browser's local storage. Add a database/auth layer before collecting real user data.</p></div></div>
 }
