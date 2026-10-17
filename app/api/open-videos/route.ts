@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       for (const endpoint of endpoints) {
         endpoint.searchParams.set("search", query);
         endpoint.searchParams.set("count", "20");
-        endpoint.searchParams.set("nsfw", "false");
+        endpoint.searchParams.set("nsfw", "true");
         endpoint.searchParams.set("licenceOneOf", [...allowedLicenceIds].join(","));
         endpoint.searchParams.set("sort", "-publishedAt");
         try {
